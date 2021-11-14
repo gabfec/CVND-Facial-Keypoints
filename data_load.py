@@ -62,7 +62,7 @@ class Normalize(object):
         image_copy = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         
         # scale color range from [0, 255] to [0, 1]
-        image_copy=  image_copy/255.0
+        image_copy = image_copy/255.0
             
         
         # scale keypoints to be centered around 0 with a range of [-1, 1]
@@ -148,7 +148,7 @@ class ToTensor(object):
         image, key_pts = sample['image'], sample['keypoints']
          
         # if image has no grayscale color channel, add one
-        if(len(image.shape) == 2):
+        if len(image.shape) == 2:
             # add that third color dim
             image = image.reshape(image.shape[0], image.shape[1], 1)
             
