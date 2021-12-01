@@ -27,16 +27,19 @@ class Net(nn.Module):
         self.conv1 = nn.Conv2d(1, 32, 5) # Output: (224-5)/1 + 1 = 220, after pooling 110
         self.conv2 = nn.Conv2d(32, 64, 5) # Output: (110-5)/1 + 1 = 106, after pooling 53
         self.conv3 = nn.Conv2d(64, 128, 3) # Output: (53-3)/1 + 1 = 51, after pooling 25
+        self.conv4 = nn.Conv2d(128, 256, 3) # Output: (25-3)/1 + 1 = 24, after pooling 11
         
         # Max pooling layer
         self.pool = nn.MaxPool2d(2, stride=2)
 
         # dropout layers
-        self.dropout1 = nn.Dropout(p=0.5)
+        self.dropout1 = nn.Dropout(p=0.3)
+        self.dropout2 = nn.Dropout(p=0.5)
 
         # fully connected layers
-        self.fc1 = nn.Linear(128*25*25, 1000)
-        self.fc2 = nn.Linear(1000, 136)
+        self.fc1 = nn.Linear(256*11*11, 1000)
+        self.fc2 = nn.Linear(1000, 500)
+        self.fc3 = nn.Linear(500, 136)
 
         
     def forward(self, x):
@@ -45,10 +48,12 @@ class Net(nn.Module):
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
         x = self.pool(F.relu(self.conv3(x)))
+        x = self.pool(F.relu(self.conv4(x)))
 
         x = x.view(x.size(0), -1)
 
         x = self.dropout1(F.relu(self.fc1(x)))
-        x = self.fc2(x)
+        x = self.dropout2(F.relu(self.fc2(x)))
+        x = self.fc3(x)
 
         return x
